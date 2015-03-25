@@ -4,11 +4,11 @@ module.exports = function (req, res, next) {
     console.log(req);
     var botPayload = {};
     var userName = req.body.user_name;
-    var text = req.body.text;
+    var gotten = req.body.text;
     botPayload.username = 'gotbot';
     botPayload.icon_emoji = ':point_right:';
 
-    botPayload.text = userName + 'says that' + text + 'has been got';
+    botPayload.text = '*'+userName + '* says that  *' + gotten + '* has been got';
 
     // send dice roll
     send(botPayload, function (error, status, body) {
