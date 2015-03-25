@@ -17,7 +17,7 @@ module.exports = function (req, res, next) {
     botPayload.username = 'gotbot';
     botPayload.icon_emoji = ':point_right:';
 
-    if (userlist.indexOf(userName)) {
+    if (listOfUsers.indexOf(userName)) {
         botPayload.text = '*' + userName + '* says that *' + gotten + '* has been got';
     } else {
         botPayload.text = '*' + userName + 'does not exist';
