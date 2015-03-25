@@ -1,16 +1,28 @@
 var request = require('request');
+var userlist = require('./userlist');
 
 module.exports = function (req, res, next) {
-    console.log(req);
+    var listOfUsers;
+
+    userlist.getUsers(function(next, res) {
+       var result = JSON.parse(res);
+       listOfUsers = result.members.map(function (mem) {
+            return mem.name;
+        });
+    });
+
     var botPayload = {};
     var userName = req.body.user_name;
     var gotten = req.body.text;
     botPayload.username = 'gotbot';
     botPayload.icon_emoji = ':point_right:';
 
-    botPayload.text = '*'+userName + '* says that  *' + gotten + '* has been got';
+    if (userlist.indexOf(userName)) {
+        botPayload.text = '*' + userName + '* says that *' + gotten + '* has been got';
+    } else {
+        botPayload.text = '*' + userName + 'does not exist';
+    }
 
-    // send dice roll
     send(botPayload, function (error, status, body) {
       if (error) {
         return next(error);
