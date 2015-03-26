@@ -27,7 +27,7 @@ module.exports = function (req, res, next) {
             botPayload.text = '*' + userName + '* says that *' + gotten + '* has been got';
         } else if(gotten === 'leaderboard'){
             scores.read(function(err, theScores) {
-                if (error) {
+                if (err) {
                     return next('reading error', err);
                 }
                 botPayload.text = theScores;
