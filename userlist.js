@@ -1,12 +1,13 @@
 var request = require('request');
+var result;
 
 module.exports.getUsers = function getUsers(callback) {
-    requestUsers(function (error, status, body) {
-      if (error) {
-        callback(error);
-      }  else {
-        callback(null, body);
-      }
+    requestUsers(function(err, status, res) {
+       var result = JSON.parse(res);
+       var listOfUsers = result.members.map(function (mem) {
+            return mem.name;
+        });
+       callback(listOfUsers);
     });
 };
 

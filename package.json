@@ -11,6 +11,7 @@
   "dependencies": {
     "express": "~4.12.3",
     "body-parser": "~1.12.2",
-    "request": "~2.54.0"
+    "request": "~2.54.0",
+    "bluebird": "~2.9.14"
   }
 }
