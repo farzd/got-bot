@@ -29,7 +29,7 @@ module.exports.read = function read(callback) {
 
         for (var key in obj.leaderboard) {
             var scores = obj.leaderboard[key];
-            scoreString += '*' + key.toUppercase() + '* -- ' + scores + '\n';
+            scoreString += '*' + key.toUpperCase(); + '* -- ' + scores + '\n';
         }
         callback(null, scoreString);
 
