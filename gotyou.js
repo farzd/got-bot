@@ -1,6 +1,5 @@
 var request = require('request');
 var userlist = require('./userlist');
-var Promise = require("bluebird");
 
 module.exports = function (req, res, next) {
 
