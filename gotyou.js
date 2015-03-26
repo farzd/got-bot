@@ -23,35 +23,27 @@ module.exports = function (req, res, next) {
         botPayload.icon_emoji = ':point_right:';
 
         if (listOfUsers.indexOf(gotten) != -1) {
-            scores.update(gotten);
             botPayload.text = '*' + userName + '* says that *' + gotten + '* has been got';
+            scores.update(gotten);
+            send(botPayload, res, next);
         } else if(gotten === 'leaderboard'){
             scores.read(function(err, theScores) {
                 if (err) {
                     return next('reading error', err);
                 }
+                console.log(typeof theScores);
                 botPayload.text = theScores;
+                send(botPayload, res, next);
             });
         } else {
             botPayload.text = '*' + gotten + '* does not exist';
         }
 
-setTimeout(function() {
-        send(botPayload, function (error, status, body) {
-            if (error) {
-                return next(error);
-            } else if (status !== 200) {
-                return next(new Error('Incoming WebHook: ' + status + ' ' + body));
-            } else {
-                return res.status(200).end();
-            }
-        });
-}, 500);
 
     }
 };
 
-function send (payload, callback) {
+function send (payload, res, next) {
     console.log(payload);
   var uri = 'https://hooks.slack.com/services/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';
 
@@ -60,10 +52,11 @@ function send (payload, callback) {
     method: 'POST',
     body: JSON.stringify(payload)
   }, function (error, response, body) {
-    if (error) {
-      return callback(error);
-    }
-
-    callback(null, response.statusCode, body);
+        if (error) {
+                return next(error);
+            } else {
+                return res.status(200).end();
+            }
   });
+
 }
