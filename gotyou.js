@@ -36,6 +36,7 @@ module.exports = function (req, res, next) {
             botPayload.text = '*' + gotten + '* does not exist';
         }
 
+setTimeout(function() {
         send(botPayload, function (error, status, body) {
             if (error) {
                 return next(error);
@@ -45,6 +46,8 @@ module.exports = function (req, res, next) {
                 return res.status(200).end();
             }
         });
+}, 500);
+
     }
 };
 
