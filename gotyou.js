@@ -17,28 +17,29 @@ module.exports = function (req, res, next) {
     function sendMessage() {
         var botPayload = {};
         var userName = req.body.user_name;
-        var gotten = req.body.text;
+        var gotten =  req.body.text;
         botPayload.username = 'gotbot';
         botPayload.icon_emoji = ':point_right:';
 
-        if (listOfUsers.indexOf(gotten)) {
+        if (listOfUsers.indexOf(gotten) != -1) {
             botPayload.text = '*' + userName + '* says that *' + gotten + '* has been got';
         } else {
             botPayload.text = '*' + userName + 'does not exist';
         }
 
 
-    send(botPayload, function (error, status, body) {
-        if (error) {
-        return next(error);
-        } else if (status !== 200) {
-        // inform user that our Incoming WebHook failed
-        return next(new Error('Incoming WebHook: ' + status + ' ' + body));
-        } else {
-        return res.status(200).end();
+
+        send(botPayload, function (error, status, body) {
+            if (error) {
+            return next(error);
+            } else if (status !== 200) {
+            // inform user that our Incoming WebHook failed
+            return next(new Error('Incoming WebHook: ' + status + ' ' + body));
+            } else {
+            return res.status(200).end();
+            }
+        });
         }
-    });
-    }
 };
 
 function send (payload, callback) {
