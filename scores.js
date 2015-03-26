@@ -21,7 +21,7 @@ module.exports.update = function update(username) {
 module.exports.read = function read(callback) {
     var scoreString = '';
     fs.readFile(outputFilename, 'utf8', function (err, data) {
-        if (err)  throw err;
+        if (err)  callback(err);
         var obj = JSON.parse(data);
 
         for (var key in obj.leaderboard) {
@@ -29,7 +29,7 @@ module.exports.read = function read(callback) {
             scoreString += key + ' ' + scores + '\n';
         }
 
-        callback(scoreString);
+        callback(null, scoreString);
 
     });
 };

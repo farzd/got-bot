@@ -26,23 +26,23 @@ module.exports = function (req, res, next) {
             botPayload.text = '*' + userName + '* says that *' + gotten + '* has been got';
             scores.update(gotten);
         } else if(gotten === 'leaderboard'){
-            scores.read(function(theScores) {
+            scores.read(function(err, theScores) {
+                if (error) {
+                    return next('reading error', err);
+                }
                 botPayload.text = theScores;
             });
         } else {
             botPayload.text = '*' + gotten + '* does not exist';
         }
 
-
-
         send(botPayload, function (error, status, body) {
             if (error) {
-            return next(error);
+                return next(error);
             } else if (status !== 200) {
-            // inform user that our Incoming WebHook failed
-            return next(new Error('Incoming WebHook: ' + status + ' ' + body));
+                return next(new Error('Incoming WebHook: ' + status + ' ' + body));
             } else {
-            return res.status(200).end();
+                return res.status(200).end();
             }
         });
         }
