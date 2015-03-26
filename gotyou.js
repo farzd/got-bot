@@ -1,5 +1,6 @@
 var request = require('request');
 var userlist = require('./userlist');
+var scores = require('./scores');
 
 module.exports = function (req, res, next) {
 
@@ -23,6 +24,11 @@ module.exports = function (req, res, next) {
 
         if (listOfUsers.indexOf(gotten) != -1) {
             botPayload.text = '*' + userName + '* says that *' + gotten + '* has been got';
+            scores.update(gotten);
+        } else if(gotten === 'leaderboard'){
+            scores.read(function(theScores) {
+                botPayload.text = theScores;
+            });
         } else {
             botPayload.text = '*' + gotten + '* does not exist';
         }
