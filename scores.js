@@ -41,6 +41,9 @@ module.exports.read = function read(callback) {
 function writeFile(obj) {
     console.log('writing file')
     fs.writeFile(outputFilename, JSON.stringify(obj, null, 4), function (err) {
-        if (err) throw err;
+        if (err) {
+            console.log(err);
+            throw err;
+        };
     });
 }
