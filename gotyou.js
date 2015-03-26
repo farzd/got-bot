@@ -23,8 +23,8 @@ module.exports = function (req, res, next) {
         botPayload.icon_emoji = ':point_right:';
 
         if (listOfUsers.indexOf(gotten) != -1) {
-            botPayload.text = '*' + userName + '* says that *' + gotten + '* has been got';
             scores.update(gotten);
+            botPayload.text = '*' + userName + '* says that *' + gotten + '* has been got';
         } else if(gotten === 'leaderboard'){
             scores.read(function(err, theScores) {
                 if (error) {
