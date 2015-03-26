@@ -31,12 +31,13 @@ module.exports = function (req, res, next) {
                 if (err) {
                     return next('reading error', err);
                 }
-                console.log(typeof theScores);
+                console.log('the scores', theScores);
                 botPayload.text = theScores;
                 send(botPayload, res, next);
             });
         } else {
             botPayload.text = '*' + gotten + '* does not exist';
+            send(botPayload, res, next);
         }
 
 
