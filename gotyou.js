@@ -24,7 +24,7 @@ module.exports = function (req, res, next) {
         if (listOfUsers.indexOf(gotten) != -1) {
             botPayload.text = '*' + userName + '* says that *' + gotten + '* has been got';
         } else {
-            botPayload.text = '*' + userName + 'does not exist';
+            botPayload.text = '*' + gotten + '* does not exist';
         }
 
 
