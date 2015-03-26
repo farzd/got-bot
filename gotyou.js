@@ -45,10 +45,11 @@ module.exports = function (req, res, next) {
                 return res.status(200).end();
             }
         });
-        }
+    }
 };
 
 function send (payload, callback) {
+    console.log(payload);
   var uri = 'https://hooks.slack.com/services/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';
 
   request({
