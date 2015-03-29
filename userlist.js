@@ -1,26 +1,25 @@
-var request = require('request');
-var result;
+var Promise = require("bluebird");
+var request = Promise.promisifyAll(require("request"));
 
-module.exports.getUsers = function getUsers(callback) {
-    requestUsers(function(err, status, res) {
-       var result = JSON.parse(res);
-       var listOfUsers = result.members.map(function (mem) {
-            return mem.name;
-        });
-       callback(listOfUsers);
-    });
+var listOfUsers;
+var requestParams = {
+    url: 'https://slack.com/api/users.list',
+    qs: {
+        token: 'xoxp-2392086267-2392090237-4188901173-6d789a'
+    }
 };
 
-function requestUsers (callback) {
-   request({
-    uri: 'https://slack.com/api/users.list',
-    method: 'GET',
-    qs: {token:'xoxp-2392086267-2392090237-4188901173-6d789a'}
-  }, function (error, response, body) {
-    if (error) {
-      return callback(error);
+module.exports = function getUsers() {
+    if (listOfUsers) {
+          console.log('return variable already set');
+         return Promise.resolve(listOfUsers);
     }
-    callback(null, response.statusCode, body);
-  });
-
-}
+    return request.getAsync(requestParams).spread(function (err, res) {
+        console.log('calling request');
+        var result = JSON.parse(res);
+        listOfUsers = result.members.map(function (user) {
+            return user.name;
+        });
+        return listOfUsers;
+    });
+};
