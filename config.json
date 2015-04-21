@@ -1,0 +1,5 @@
+{
+    "GET_USER_URL": "https://slack.com/api/users.list",
+    "GET_USER_TOKEN": "xoxp-2392086267-2392090237-4188901173-6d789a",
+    "POST_MSG_URL": "https://hooks.slack.com/services/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"
+}
