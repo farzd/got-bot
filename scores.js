@@ -1,48 +1,51 @@
-var fs = require('fs');
+var Promise = require('bluebird');
+var fs = Promise.promisifyAll(require('fs'));
 var path = require('path');
-var outputFilename = path.join(__dirname, '/leaderboard/scores.json');
+var config = require('./config');
+var outputFilename = path.join(__dirname, config.SCORE_DIR);
 
-module.exports.update = function update(username) {
-    fs.readFile(outputFilename, 'utf8', function (err, data) {
-        console.log('in read file');
-      if (err)  throw err;
-      var obj = JSON.parse(data);
-      if(obj.leaderboard[username]) {
-        console.log('found user', username);
-        var theScore = obj.leaderboard[username];
-        obj.leaderboard[username] = theScore + 1;
-        writeFile(obj);
+function update(username) {
+    fs.readFileAsync(outputFilename, 'utf8').then(JSON.parse).then(function (result) {
+      if(result.leaderboard[username]) {
+        var theScore = result.leaderboard[username];
+        result.leaderboard[username] = theScore + 1;
+        writeFile(result);
       } else {
-        console.log('not found user');
-        obj.leaderboard[username] = 1;
-        writeFile(obj);
+        result.leaderboard[username] = 1;
+        writeFile(result);
       }
+    }).catch(SyntaxError, function(e) {
+        console.error("invalid json in file");
+    }).catch(function(e) {
+        console.error("unable to read file");
     });
-};
+}
 
-module.exports.read = function read(callback) {
-    console.log('read leaderboard');
+function read() {
     var scoreString = ':fire::fire::fire: *Leaderboard* :fire::fire::fire:\n\n';
-    fs.readFile(outputFilename, 'utf8', function (err, data) {
-        if (err)  callback(err);
-        var obj = JSON.parse(data);
-
-        for (var key in obj.leaderboard) {
-            var scores = obj.leaderboard[key];
+    return fs.readFileAsync(outputFilename, 'utf8').then(JSON.parse).then(function (result) {
+        for (var key in result.leaderboard) {
+            var scores = result.leaderboard[key];
             var name = key.toUpperCase();
             scoreString += '*' + name + '* -- ' + scores + ' \n';
         }
-        callback(null, scoreString);
 
-    });
-};
-
-function writeFile(obj) {
-    console.log('writing file');
-    fs.writeFile(outputFilename, JSON.stringify(obj, null, 4), function (err) {
-        if (err) {
-            console.log(err);
-            throw err;
-        };
+        return scoreString;
+    }).catch(SyntaxError, function(e) {
+        console.error("invalid json in file");
+    }).catch(function(e) {
+        console.error("unable to read file");
     });
 }
+
+function writeFile(obj) {
+    fs.writeFileAsync(outputFilename, JSON.stringify(obj, null, 4)).catch(function(e) {
+        console.error("unable to read file");
+    });
+}
+
+
+module.exports = {
+    read: read,
+    update: update
+};

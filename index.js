@@ -18,13 +18,13 @@ app.listen(port, function () {
 
 // test route
 app.get('/', function (req, res) {
-    res.status(200).send('Hello world!')
+    res.status(200).send('Hello world!');
 });
 
 app.get('/gotyou', function (req, res, next) {
     getUserList().then(function (userlist) {
         sendMsg(req, userlist);
-    });
+    }).catch(next);
 });
 
 // error handler

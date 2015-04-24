@@ -21,7 +21,5 @@ module.exports = function () {
         });
         return userList;
 
-    }).catch(function (e) {
-        Promise.reject('error getting list of users' + e)
     });
 };

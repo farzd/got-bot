@@ -3,24 +3,25 @@ var Promise = require('bluebird');
 var request = Promise.promisifyAll(require('request'));
 
 function draftMessage(username, gotten) {
-    if (username) {
-        return '*' + username + '* says that *' + gotten + '* has been got';
-    } else {
-        return '*' + gotten + '* does not exist';
-    }
-}
-
-function postMessage(message, res, next) {
     var botPayload = {
         username: 'gotbot',
-        icon_emoji: ':point_right:',
-        botPayload.text: message
+        icon_emoji: ':point_right:'
     };
 
+    if (username) {
+        botPayload.text = '*' + username + '* says that *' + gotten + '* has been got';
+    } else {
+        botPayload.text = '*' + gotten + '* does not exist';
+    }
+
+    return JSON.stringify(botPayload);
+}
+
+function postMessage(username, gotten, res, next) {
     request.getAsync({
         uri: config.POST_MSG_URL,
         method: 'POST',
-        body: JSON.stringify(payload)
+        body: draftMessage(username, gotten)
     }).then(function (result) {
         return res.status(200).end();
     }).catch(function (e) {
@@ -34,7 +35,7 @@ module.exports = function (req, userlist) {
 
     if (userlist.indexOf(gotten) != -1) {
         scores.update(gotten);
-        postMessage(draftMessage(username, gotten), res, next);
+        postMessage(username, gotten, res, next);
     } else if (gotten === 'leaderboard') {
         scores.read(function (err, theScores) {
             if (err) {
@@ -43,7 +44,7 @@ module.exports = function (req, userlist) {
             postMessage(theScores, res, next);
         });
     } else {
-        postMessage(draftMessage(null, gotten), res, next);
+        postMessage(null, gotten, res, next);
     }
 
-}
+};
