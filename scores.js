@@ -14,10 +14,9 @@ function update(username) {
         result.leaderboard[username] = 1;
         writeFile(result);
       }
-    }).catch(SyntaxError, function(e) {
-        console.error("invalid json in file");
-    }).catch(function(e) {
-        console.error("unable to read file");
+    })
+    .catch(SyntaxError, function () {
+        return Promise.reject(new Error('Invalid json file'));
     });
 }
 
@@ -30,10 +29,9 @@ function read() {
             scoreString += '*' + name + '* -- ' + scores + ' \n';
         }
         return scoreString;
-    }).catch(SyntaxError, function(e) {
-        console.error("invalid json in file");
-    }).catch(function(e) {
-        console.error("unable to read file");
+    })
+    .catch(SyntaxError, function () {
+        return Promise.reject(new Error('Invalid json file'));
     });
 }
 

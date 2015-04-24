@@ -39,11 +39,11 @@ module.exports = function (req, res, next, userlist) {
     if (userlist.indexOf(gotten) != -1) {
         score.update(gotten).then(function () {
             postMessage(username, gotten, null, res, next);
-        }); // catch err next
+        }).catch(next);
     } else if (gotten === 'leaderboard') {
         score.read().then(function (theScores) {
             postMessage(null, null, theScores, res, next);
-        }); //catch next err?
+        }).catch(next);
     } else {
         postMessage(null, gotten, null, res, next);
     }
