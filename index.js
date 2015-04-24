@@ -21,9 +21,9 @@ app.get('/', function (req, res) {
     res.status(200).send('Hello world!');
 });
 
-app.get('/gotyou', function (req, res, next) {
+app.post('/gotyou', function (req, res, next) {
     getUserList().then(function (userlist) {
-        sendMsg(req, userlist);
+        sendMsg(req, res, next, userlist);
     }).catch(next);
 });
 

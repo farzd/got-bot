@@ -1,8 +1,9 @@
 var config = require('./config');
 var Promise = require('bluebird');
 var request = Promise.promisifyAll(require('request'));
+var score = require('./scores');
 
-function draftMessage(username, gotten) {
+function draftMessage(username, gotten, theScores) {
     var botPayload = {
         username: 'gotbot',
         icon_emoji: ':point_right:'
@@ -10,6 +11,8 @@ function draftMessage(username, gotten) {
 
     if (username) {
         botPayload.text = '*' + username + '* says that *' + gotten + '* has been got';
+    } else if(theScores){
+        botPayload.text = theScores;
     } else {
         botPayload.text = '*' + gotten + '* does not exist';
     }
@@ -17,11 +20,11 @@ function draftMessage(username, gotten) {
     return JSON.stringify(botPayload);
 }
 
-function postMessage(username, gotten, res, next) {
+function postMessage(username, gotten, theScores, res, next) {
     request.getAsync({
         uri: config.POST_MSG_URL,
         method: 'POST',
-        body: draftMessage(username, gotten)
+        body: draftMessage(username, gotten, theScores)
     }).then(function (result) {
         return res.status(200).end();
     }).catch(function (e) {
@@ -29,22 +32,20 @@ function postMessage(username, gotten, res, next) {
     });
 }
 
-module.exports = function (req, userlist) {
+module.exports = function (req, res, next, userlist) {
     var username = req.body.user_name;
     var gotten = req.body.text;
 
     if (userlist.indexOf(gotten) != -1) {
-        scores.update(gotten);
-        postMessage(username, gotten, res, next);
+        score.update(gotten).then(function () {
+            postMessage(username, gotten, null, res, next);
+        }); // catch err next
     } else if (gotten === 'leaderboard') {
-        scores.read(function (err, theScores) {
-            if (err) {
-                return next('reading error', err);
-            }
-            postMessage(theScores, res, next);
-        });
+        score.read().then(function (theScores) {
+            postMessage(null, null, theScores, res, next);
+        }); //catch next err?
     } else {
-        postMessage(null, gotten, res, next);
+        postMessage(null, gotten, null, res, next);
     }
 
 };

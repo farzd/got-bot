@@ -5,7 +5,7 @@ var config = require('./config');
 var outputFilename = path.join(__dirname, config.SCORE_DIR);
 
 function update(username) {
-    fs.readFileAsync(outputFilename, 'utf8').then(JSON.parse).then(function (result) {
+    return fs.readFileAsync(outputFilename, 'utf8').then(JSON.parse).then(function (result) {
       if(result.leaderboard[username]) {
         var theScore = result.leaderboard[username];
         result.leaderboard[username] = theScore + 1;
@@ -29,7 +29,6 @@ function read() {
             var name = key.toUpperCase();
             scoreString += '*' + name + '* -- ' + scores + ' \n';
         }
-
         return scoreString;
     }).catch(SyntaxError, function(e) {
         console.error("invalid json in file");
@@ -43,7 +42,6 @@ function writeFile(obj) {
         console.error("unable to read file");
     });
 }
-
 
 module.exports = {
     read: read,
